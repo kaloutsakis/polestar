@@ -18,4 +18,5 @@ target_compile_options(server
 
 target_link_libraries(server
     PRIVATE uv
+    PRIVATE sdk
 )
