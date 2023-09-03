@@ -4,6 +4,7 @@
 
 int main(int, char **)
 {
-    std::cout << "Hello, world!\n";
     spdlog::info("Hello world");
+
+    return EXIT_SUCCESS;
 }
