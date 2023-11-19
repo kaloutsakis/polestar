@@ -22,4 +22,5 @@ target_link_libraries(binuv
 
 target_compile_options(binuv
     PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
+    PRIVATE $<$<COMPILE_LANGUAGE:C>:-std=c17>
 )
