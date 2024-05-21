@@ -34,13 +34,27 @@
 
 /* The `#define WRAP(func)` is a preprocessor macro that defines a function-like macro named `WRAP`.
 This macro takes a single argument `func`, which is expected to be a function call. */
-#define WRAP(func)                                 \
-    do                                             \
-    {                                              \
-        uv_log_manager_info("Entering %s", #func); \
-        func;                                      \
-        uv_log_manager_info("Exiting  %s", #func); \
-    } while (false)
+
+#define WRAP(func)                                  \
+    ({                                              \
+        uv_log_manager_info("Entering %s", #func);  \
+        func;                                       \
+        uv_log_manager_info("Exiting  %s", #func);  \
+    })
+
+/* The `#define WRAP2(func) \` is a preprocessor macro that defines a function-like macro named `WRAP2`.
+This macro takes a single argument `func`, which is expected to be a function call. Inside the macro
+definition, it logs a message indicating the entry of the function using
+`uv_log_manager_info("Entering %s", #func);`, then it executes the function call `func`, and finally
+logs a message indicating the exit of the function using `uv_log_manager_info("Exiting %s",
+#func);`. */
+#define WRAP2(func)                                 \
+    ({                                              \
+        uv_log_manager_info("Entering %s", #func);  \
+        __auto_type ret = func;                     \
+        uv_log_manager_info("Exiting  %s", #func);  \
+        ret;                                        \
+    })
 
 /* The `#define RETURN(status) \` is a preprocessor macro that defines a function-like macro named
 `RETURN`. This macro takes a single argument `status`, which is expected to be a status code. */
@@ -116,8 +130,38 @@ void wait_for_a_while(uv_idle_t *handle)
  */
 int main(int argc, const char *argv[])
 {
-    int status;
-    WRAP((status = do_nothing(2, 3)));
+    int status = 0;
+    int var = 
+    ({
+        int no_chars = 0;
+        ({
+            for (int i = 0; i < 4; i++)
+            {
+                no_chars += printf("%d\n", i);
+            }
+        });
+        no_chars;
+    });
+
+    printf("var = %d\n", var);
+    
+    status = ({var = printf("YOU ARE HACKED\n"); printf("%d\n", var); var;});
+    printf("%d\n", status);
+    ({  
+        int no_chars = 0;
+        ({
+            for (int i = 0; i < 4; i++)
+            {
+                no_chars += printf("%d\n", i);
+            }
+        });
+    });
+
+    WRAP2((status = do_nothing(2, 3)));
+    WRAP((do_nothing(2, 3)));
+
+    status = WRAP2((do_nothing(4, 3)));
+    uv_log_manager_info("status = %i", status);
 
     uv_log_manager_welcome();
     uv_log_manager_info("NCORES = %s", getenv_safe("NCORES"));
@@ -132,7 +176,5 @@ int main(int argc, const char *argv[])
 
     uv_loop_close(uv_default_loop());
 
-    // RETURN(EXIT_SUCCESS);
     RETURN2(info, EXIT_SUCCESS, "%s | binuv is exiting", __FUNCTION__);
-    // return uv_log_manager_goodbye(), EXIT_SUCCESS;
 }
