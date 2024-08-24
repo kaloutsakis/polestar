@@ -118,6 +118,13 @@ void wait_for_a_while(uv_idle_t *handle)
         uv_idle_stop(handle);
 }
 
+int foo(int a)
+{
+    return a;
+}
+
+typedef int (*func)(int);
+
 /**
  * The main function initializes and runs an idle loop in libuv, logging information and waiting for a
  * while.
@@ -130,6 +137,11 @@ void wait_for_a_while(uv_idle_t *handle)
  */
 int main(int argc, const char *argv[])
 {
+    func herefunc = foo;
+    herefunc(3);
+
+    return ({uv_log_manager_info("Application exited prematurely!"); 120;});
+
     int status = 0;
     int var = 
     ({
