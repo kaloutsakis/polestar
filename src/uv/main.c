@@ -140,7 +140,7 @@ int main(int argc, const char *argv[])
     func herefunc = foo;
     herefunc(3);
 
-    return ({uv_log_manager_info("Application exited prematurely!"); 120;});
+    printf("string = [%.4s]\n",(const char []){'a', 'b', 'c', 'd'});
 
     int status = 0;
     int var = 

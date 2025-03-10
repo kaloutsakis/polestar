@@ -12,11 +12,13 @@ def main(argc: int = 0, argv: list[str] = None) -> int:
     None
     """
     print("Hello from Pythonic!")
-    
-    with argc:
+    print("argc = ", argc)
+    print("argv = ", argv)
+        
+    if argc:
         print("argc = ", argc)
 
-    with argv:
+    if argv:
         print("argv = ", argv)
         
     return 0
